@@ -2,6 +2,17 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { Button } from "@/components/ui/button";
+import Logo from "@/components/custom/logo";
+
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
+
 import { ThemeProvider } from "@/components/theme-provider"
 
 const geistSans = localFont({
@@ -12,6 +23,11 @@ const geistSans = localFont({
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
+  weight: "100 900",
+});
+const satoshiSans = localFont({
+  src: "./fonts/Satoshi-Variable.woff",
+  variable: "--font-satoshi-sans",
   weight: "100 900",
 });
 
@@ -26,19 +42,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${satoshiSans} antialiased`}
         >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="dark flex justify-between h-16 p-4">
+              <Logo />
+              <SignedOut>
+                <SignInButton>
+                  <Button variant="secondary">Login</Button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
+
+            {children}
+          </ThemeProvider>
+        </body>
+
+      </html>
+    </ClerkProvider>
   );
 }
