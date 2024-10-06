@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import Logo from "@/components/custom/logo";
-
 export default function Home() {
   return (
     <div>
