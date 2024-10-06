@@ -14,7 +14,7 @@ const HelloAnimation = (): JSX.Element => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
-        }, 3000); // Change text every 4.5 seconds to allow full transition
+        }, 4000); // Change text every 4.5 seconds to allow full transition
 
         return () => clearInterval(interval);
     }, []);
