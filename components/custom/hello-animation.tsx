@@ -7,8 +7,7 @@ const HelloAnimation = (): JSX.Element => {
         "Hello World.",
         "It's time to wake up.",
         "It's time to make them accountable.",
-        "It's time for Vox Observer"
-
+        "It's time for Vox Observer."
     ];
     const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
 
