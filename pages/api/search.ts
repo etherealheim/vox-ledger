@@ -1,5 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+interface WebResult {
+    title: string;
+    url: string;
+    snippet: string;
+}
+
+interface BraveApiResponse {
+    web?: {
+        results?: WebResult[];
+    };
+}
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { query } = req.query;
 
@@ -19,12 +31,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             },
         });
 
-        const data = await response.json();
+        const data: BraveApiResponse = await response.json();
         console.log('Brave API data:', data);
 
         // Extract 'web' results
         if (data.web && data.web.results) {
-            const webResults = data.web.results.map((result: any) => ({
+            const webResults = data.web.results.map((result: WebResult) => ({
                 title: result.title || 'No title',
                 url: result.url,
                 snippet: result.snippet || 'No snippet',
