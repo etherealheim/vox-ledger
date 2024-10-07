@@ -20,12 +20,12 @@ const HelloAnimation = (): JSX.Element => {
     }, []);
 
     return (
-        <div className="h-screen flex items-center justify-center">
-            <section className="container mx-auto">
+        <div className="h-screen flex items-center justify-center my-[-64px]">
+            <section className="container mx-auto ">
                 <AnimatePresence mode="wait">
                     <motion.h1
                         key={currentTextIndex}
-                        className="text-2xl font-normal text-center"
+                        className="text-2xl font-normal text-center text-stone-400"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}

@@ -1,10 +1,24 @@
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+import MenubarInit from "@/components/custom/menubar-init";
+
 export default function Dashboard() {
     return (
-        <div className="container mx-auto grid grid-cols-12 gap-4">
-            <div className="col-span-6 py-24">
-                <h1 className="text-4xl font-bold text-white mb-4">Welcome to Your Dashboard</h1>
-                <p className="text-lg text-white">Here you can manage your settings and view your data.</p>
+        <div>
+            <div className="absolute bottom-4 left-4">
+                <MenubarInit />
             </div>
+            <section className="h-screen flex flex-col justify-center">
+                <div className="text-center mb-8 mt-[-120px]">
+                    <p className="text-xl text-stone-400 pb-2">Welcome User.</p>
+                    <p className="text-md text-stone-600">Search for your favourite public figure.</p>
+                </div>
+                <div className="flex mx-auto space-x-4 w-full max-w-2xl items-center">
+                    <Input type="search" placeholder="Search" className="flex-grow" />
+                    <Button type="submit" variant="outline">Search</Button>
+                </div>
+            </section>
         </div>
     );
 }
