@@ -57,8 +57,8 @@ export default function RootLayout({
                 <UserButton />
               </SignedIn>
             </div>
-
             {children}
+            <Analytics />
           </ThemeProvider>
         </body>
 
