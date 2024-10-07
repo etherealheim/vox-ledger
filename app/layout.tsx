@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Favicon from "@/components/custom/favicon";
+import { Analytics } from "@vercel/analytics/react"
 
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/custom/logo";
