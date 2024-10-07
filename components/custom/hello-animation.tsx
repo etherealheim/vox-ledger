@@ -17,7 +17,7 @@ const HelloAnimation = (): JSX.Element => {
         }, 4000); // Change text every 4.5 seconds to allow full transition
 
         return () => clearInterval(interval);
-    }, []);
+    }, [texts.length]);
 
     return (
         <div className="h-screen flex items-center justify-center my-[-64px]">
