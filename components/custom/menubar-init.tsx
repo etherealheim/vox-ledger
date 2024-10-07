@@ -19,6 +19,9 @@ export default function MenubarInit() {
             if (e.altKey && e.key === 'a') {
                 e.preventDefault();
                 window.location.href = "/dashboard";
+            } else if (e.altKey && e.key === 's') {
+                e.preventDefault();
+                window.location.href = "/manifesto";
             }
         };
 
@@ -32,11 +35,14 @@ export default function MenubarInit() {
     return (
         <Menubar>
             <MenubarMenu>
+                <MenubarTrigger>
+                    <Link href="/">Home</Link>
+                </MenubarTrigger>
+
+            </MenubarMenu>
+            <MenubarMenu>
                 <MenubarTrigger>Navigation</MenubarTrigger>
                 <MenubarContent>
-                    <MenubarItem>
-                        Upload <MenubarShortcut>⌘T</MenubarShortcut>
-                    </MenubarItem>
                     <MenubarItem className="flex justify-between">
                         <Link href="/dashboard">
                             Dashboard
@@ -44,22 +50,12 @@ export default function MenubarInit() {
                         <MenubarShortcut>⌥A</MenubarShortcut>
                     </MenubarItem>
                     <MenubarSeparator />
-                    <MenubarItem>Share</MenubarItem>
-                    <MenubarSeparator />
-                    <MenubarItem>Print</MenubarItem>
-                </MenubarContent>
-            </MenubarMenu>
-            <MenubarMenu>
-                <MenubarTrigger>File</MenubarTrigger>
-                <MenubarContent>
-                    <MenubarItem>
-                        New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+                    <MenubarItem className="flex justify-between">
+                        <Link href="/manifesto">
+                            Manifesto
+                        </Link>
+                        <MenubarShortcut>⌥S</MenubarShortcut>
                     </MenubarItem>
-                    <MenubarItem>New Window</MenubarItem>
-                    <MenubarSeparator />
-                    <MenubarItem>Share</MenubarItem>
-                    <MenubarSeparator />
-                    <MenubarItem>Print</MenubarItem>
                 </MenubarContent>
             </MenubarMenu>
         </Menubar>
