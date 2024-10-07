@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Favicon from "@/components/custom/favicon";
 
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/custom/logo";
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <ClerkProvider signInForceRedirectUrl="/dashboard">
       <html lang="en">
+        <Favicon />
         <body
           className={`${satoshiSans} antialiased`}
         >
