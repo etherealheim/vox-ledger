@@ -54,18 +54,22 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <div className="dark flex justify-between h-16 p-4">
-              <Logo />
-              <div className="absolute bottom-4 left-4">
+              <div className="fixed top-0 left-0">
+                <Logo />
+              </div>
+              <div className="fixed bottom-4 left-4">
                 <MenubarInit />
               </div>
-              <SignedOut>
-                <SignInButton>
-                  <Button variant="secondary">Login</Button>
-                </SignInButton>
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
+              <div className="fixed top-4 right-4">
+                <SignedOut>
+                  <SignInButton>
+                    <Button variant="secondary">Login</Button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton />
+                </SignedIn>
+              </div>
             </div>
             {children}
             <Analytics />
