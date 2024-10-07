@@ -3,7 +3,7 @@ export default function AboutPage() {
         <div className="flex justify-center">
             <div className="grid grid-cols-6 gap-4 max-w-3xl">
                 <div className="col-span-6 pt-24">
-                    <p className="text-6xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200" >Empowering Democracy. Through Transparency. Private.</p>
+                    <p className="text-6xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200" >Empowering Democracy. Through Transparency. Privately.</p>
                 </div>
                 <div className="col-span-3 pt-12">
                     <ul className=" list-none text-md font-semibold font-[family-name:var(--font-satoshi-sans)] text-stone-200">
@@ -24,7 +24,7 @@ export default function AboutPage() {
                         <br /><br />Vox Observer offers comprehensive analysis of voting records, insights into policy positions and their evolution over time, and comparisons between stated intentions and actual actions. I firmly believe that an informed citizenry is the cornerstone of a strong democracy. By using this platform, you&apos;re not just accessing information – you&apos;re becoming part of a movement that&apos;s actively shaping our political future.
                         <br /><br />Join us in strengthening the foundations of democracy. Together, we can create a more transparent, accountable, and responsible government for all nations
                         <br /><br />Embracing the spirit of global cooperation, Vox Observer is proudly open-source. This project will be available on GitHub, enabling nations worldwide to adapt and implement this tool to enhance understanding of their own governmental processes. By making our technology accessible, we&apos;re fostering a worldwide movement towards greater political transparency and accountability.
-                        </p>
+                    </p>
                 </div>
             </div>
         </div >
