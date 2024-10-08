@@ -3,7 +3,7 @@ export default function AboutPage() {
         <div className="flex justify-center px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 max-w-3xl">
                 <div className="col-span-1 sm:col-span-6 pt-12 sm:pt-24">
-                    <p className="text-4xl sm:text-6xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200">
+                    <p className="text-4xl sm:text-5xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200">
                         Empowering Democracy. Through Transparency. Privately.
                     </p>
                 </div>

@@ -49,6 +49,11 @@ export default function MenubarInit() {
                         </Link>
                         <MenubarShortcut>⌥A</MenubarShortcut>
                     </MenubarItem>
+                    <MenubarItem className="flex justify-between">
+                        <Link href="/character/miroslav-kalousek">
+                            Dummy Target
+                        </Link>
+                    </MenubarItem>
                     <MenubarSeparator />
                     <MenubarItem className="flex justify-between">
                         <Link href="/manifesto">
