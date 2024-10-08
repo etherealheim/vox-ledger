@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Use the Chat Completion API with gpt-3.5-turbo
         const response = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo', // Use 'gpt-4' if you have access
+            model: 'gpt-4o', // Use 'gpt-4' if you have access
             messages: [{ role: 'user', content: sanitizedPrompt }],
             max_tokens: 150, // Adjust as needed
             temperature: 0.7, // Adjust as needed

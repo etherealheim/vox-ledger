@@ -4,6 +4,8 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr'; // Wikipedia
 
+import { Skeleton } from "@/components/ui/skeleton"
+
 const CharacterPage = () => {
     // Generate Person's Name from the pathname
     const pathname = usePathname();
@@ -54,7 +56,7 @@ const CharacterPage = () => {
     // Fetch position using OpenAI
     useEffect(() => {
         if (character) {
-            const prompt = `What is/was the position of ${character}? for example "Former Member of Parliament" Dont mention name. Format text with camel case letters. double check the response`;
+            const prompt = `What is/was the position of ${character}? for example "Former Member of Parliament" Dont mention name. Format text with camel case letters. Use space between words double check the response`;
 
             fetchCompletion(prompt)
                 .then(setPosition)
@@ -65,7 +67,7 @@ const CharacterPage = () => {
     // Handle errors and loading states
     if (positionError) return <div>{positionError}</div>;
     if (error) return <div>Failed to load</div>;
-    if (!data) return <div>Loading...</div>;
+    if (!data) return <div></div>;
 
     const description = data.extract || 'Description not found';
 
@@ -75,9 +77,14 @@ const CharacterPage = () => {
                 <h1 className="text-5xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-2">
                     {character}
                 </h1>
-                <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
-                    {position}
-                </p>
+                {position ? (
+                    <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
+                        {position}
+                    </p>
+                ) : (
+                    <div className='pt-2 pb-8'><Skeleton className="w-[300px] h-[20px] rounded-xl" /></div>
+
+                )}
                 <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-lg font-medium">
                     {description}
                 </p>
