@@ -69,7 +69,7 @@ const CharacterPage = () => {
     if (error) return <div>Failed to load</div>;
     if (!data) return <div></div>;
 
-    const description = data.extract || 'Description not found';
+    const description = data.extract || '';
 
     return (
         <section className="container mx-auto grid grid-cols-12 h-screen pt-24">

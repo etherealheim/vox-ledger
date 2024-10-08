@@ -31,7 +31,7 @@ const SearchBox: React.FC = () => {
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
                     className="flex-grow"
-                    placeholder="Search"
+                    placeholder="Search without diacriticis"
                 />
                 <Button onClick={handleSearch} variant="outline">
                     Search
