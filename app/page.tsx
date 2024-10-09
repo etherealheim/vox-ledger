@@ -1,7 +1,6 @@
 import HelloAnimation from "@/components/custom/hello-animation";
 import MenubarInit from "@/components/custom/menubar-init";
 
-
 export default function Home() {
   return (
     <div>

@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import useSWR from 'swr'; // Wikipedia
 
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ChartPie } from '@/components/custom/chart-pie';
+import { ChartArea } from '@/components/custom/chart-area';
 
 const CharacterPage = () => {
     // Generate Person's Name from the pathname
@@ -72,24 +75,56 @@ const CharacterPage = () => {
     const description = data.extract || '';
 
     return (
-        <section className="container mx-auto grid grid-cols-12 h-screen pt-24">
-            <div className="col-span-6">
-                <h1 className="text-5xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-2">
-                    {character}
-                </h1>
-                {position ? (
-                    <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
-                        {position}
-                    </p>
-                ) : (
-                    <div className='pt-2 pb-8'><Skeleton className="w-[300px] h-[20px] rounded-xl" /></div>
+        <div>
+            <section className="container mx-auto grid grid-cols-12 pt-24">
+                <div className="col-span-6">
+                    <h1 className="text-5xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-2">
+                        {character}
+                    </h1>
+                    {position ? (
+                        <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
+                            {position}
+                        </p>
+                    ) : (
+                        <div className='pt-2 pb-8'><Skeleton className="w-[300px] h-[20px] rounded-xl" /></div>
 
-                )}
-                <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-lg font-medium">
-                    {description}
-                </p>
-            </div>
-        </section>
+                    )}
+                    <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-lg font-medium">
+                        {description}
+                    </p>
+                </div>
+            </section>
+            <section className="container mx-auto grid grid-cols-12 pt-24 gap-10">
+                <div className='col-span-8'>
+                    <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6'>Recent Claims</h2>
+
+                </div>
+                <div className='col-span-4'>
+                    <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6'>Voting</h2>
+                    <Tabs defaultValue="chart">
+                        <TabsList>
+                            <TabsTrigger value="chart">Chart</TabsTrigger>
+                            <TabsTrigger value="vote-log">Vote Log</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="chart">
+                            <ChartPie />
+                        </TabsContent>
+                        <TabsContent value="vote-log">Change your password here.</TabsContent>
+                    </Tabs>
+                    <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6 pt-24'>Attendance</h2>
+                    <Tabs defaultValue="chart">
+                        <TabsList>
+                            <TabsTrigger value="chart">Chart</TabsTrigger>
+                            <TabsTrigger value="vote-log">Vote Log</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="chart">
+                            <ChartArea />
+                        </TabsContent>
+                        <TabsContent value="vote-log">Change your password here.</TabsContent>
+                    </Tabs>
+                </div>
+            </section>
+        </div>
     );
 };
 
