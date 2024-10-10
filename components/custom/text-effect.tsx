@@ -11,7 +11,7 @@ import React from 'react';
 type PresetType = 'blur' | 'shake' | 'scale' | 'fade' | 'slide';
 
 type TextEffectProps = {
-    children: string;
+    children: React.ReactNode;
     per?: 'word' | 'char' | 'line';
     as?: keyof React.JSX.IntrinsicElements;
     variants?: {
@@ -100,7 +100,7 @@ const presetVariants: Record<
 };
 
 const AnimationComponent: React.FC<{
-    segment: string;
+    segment: React.ReactNode;
     variants: Variants;
     per: 'line' | 'word' | 'char';
     segmentWrapperClassName?: string;
@@ -120,7 +120,7 @@ const AnimationComponent: React.FC<{
             </motion.span>
         ) : (
             <motion.span className='inline-block whitespace-pre'>
-                {segment.split('').map((char, charIndex) => (
+                {Array.from(segment as string).map((char, charIndex) => (
                     <motion.span
                         key={`char-${charIndex}`}
                         aria-hidden='true'
@@ -160,15 +160,20 @@ export function TextEffect({
     onAnimationComplete,
     segmentWrapperClassName,
 }: TextEffectProps) {
-    let segments: string[];
-
-    if (per === 'line') {
-        segments = children.split('\n');
-    } else if (per === 'word') {
-        segments = children.split(/(\s+)/);
-    } else {
-        segments = children.split('');
-    }
+    const segments: React.ReactNode[] = React.Children.toArray(children).flatMap(
+        (child) => {
+            if (typeof child === 'string') {
+                if (per === 'line') {
+                    return child.split('\n');
+                } else if (per === 'word') {
+                    return child.split(/(\s+)/);
+                } else {
+                    return child.split('');
+                }
+            }
+            return child;
+        }
+    );
 
     const MotionTag = motion[as as keyof typeof motion] as typeof motion.div;
     const selectedVariants = preset
@@ -176,7 +181,7 @@ export function TextEffect({
         : { container: defaultContainerVariants, item: defaultItemVariants };
     const containerVariants = variants?.container || selectedVariants.container;
     const itemVariants = variants?.item || selectedVariants.item;
-    const ariaLabel = per === 'line' ? undefined : children;
+    const ariaLabel = per === 'line' ? undefined : segments.join('');
 
     const stagger = defaultStaggerTimes[per];
 

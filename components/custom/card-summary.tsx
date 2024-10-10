@@ -11,12 +11,15 @@ import Link from 'next/link';
 
 const DATE = "24-04-2024";
 const LINK = "#";
-const SUMMARY = "Communication contains a mixture of reasonable arguments, populism, and generalized assertions without deeper analysis. The arguments are framed in a way to blame both sides (left and right) for a lack of discourse, which is a recognizable pattern in political rhetoric. Additionally, there is some oversimplification and emotional appeal to class struggles.";
 const PARAGRAPHS = [
     "Problémem stávajících stran, ať už si říkají levicové či pravicové je, že se bojí otevřené a pravdivé diskuze o tom, jaký stát si přejeme a jak nastavíme jeho veřejné služby tak, aby byly ufinancovatelné. Takže je máme dlouhodobě neufinancovatelné, na což doplatíme všichni…",
     "Což o to, vrcholní představitelé mají být dobře placeni. Vzhledem k počtu osob je to rozpočtově bezvýznamné. Hádky o platy politiků jsou vždy přehlídkou populismu.To všechno je pravda. Přesto si myslím, že dnes je na to hodně nesprávná chvíle.",
     "Nepříjemné je, že kdykoliv se @SOCDEM_cz pokoušela být moderní nekomunistickou levicí, oslabovala(Horák, Battěk, Špidla). Posilovala tehdy, když oslovila bolševickou mentalitu a probudila třídní nenávist(Zeman, Paroubek). Takže kudy, přátelé či soudruzi?",
-    "Tyhle řeči jsou strašně nebezpečné. Řítíme se do už brzké demografické krize, až silné ročníky po r.2030 začnou odcházet do důchodu, přestanou platit a začnou čerpat. Ani ty navržené úpravy ten problém plně neřeší, jenom ho mírní. Politici, kteří to lidem zamlčují, nebo tvrdí, že to dokáží vyřešit “lepším výběrem daní”, je úmyslně uvádějí v omyl stejně tak, jako by nemocnému lékař tvrdil, že se nemusí léčit. Ohrožují tak jejich vlastní budoucnost a žadají jejich hlasy za to, že je poškodí."
+    "Tyhle řeči jsou strašně nebezpečné. Řítíme se do už brzké demografické krize, až silné ročníky po r.2030 začnou odcházet do důchodu, přestanou platit a začnou čerpat. Ani ty navržené úpravy ten problém plně neřeší, jenom ho mírní. Politici, kteří to lidem zamlčují, nebo tvrdí, že to dokáží vyřešit “lepším výběrem daní”, je úmyslně uvádějí v omyl stejně tak, jako by nemocnému lékař tvrdil, že se nemusí léčit. Ohrožují tak jejich vlastní budoucnost a žadají jejich hlasy za to, že je poškodí.",
+    "Měl jsem dva premiéry z @ODScz.Byli odlišní a vztahy jsme měli různé.Ale stoprocentně vím, že kdybych jim přinesl v rozpočtu “cinknutá” čísla, tak mě s tím oba vyrazili ze dveří a nařídili přepracovat.ODS měla v genech, že rozpočet musí být pravdivý a poctivý.Je velkým politickým zklamáním, že už to v genech nemá.",
+    "Paní poslankyně @alenaschillerová, já bych akceptoval váš odpor proti navrženým změnám, kdybyste předkládali srozumitelnou alternativu; je to ale stejné, jako v r.2014: zrušili jste Nečasovu reformu a @AndrejBabis slíbil, že záhy předloží jinou, lepší; nepředložili jste nic, jenom jste každoročně zhoršovali bilanci stávajícího systému mnohem větší, než zákonnou valorizací; křičet “ne!”, ale nemít řešení není program; letět do zdi a tvrdit, že tam ta zeď není, je hazard s budoucností nás všech; děláte bohužel obojí.",
+    "Je možné diskutovat o výši deficitu. Je možné leccos omlouvat koaličními kompromisy. Není ale možné vědomě napsat do rozpočtu nepravdivá čísla. To nesmíte, ať už jste pravičák nebo levičák. To nelze omluvit ničím.",
+    "O “cynismu vůči obětem povodní” nemůže být řeč. Nelžete a neberte si je jako rukojmí, @juchelkaa . Ti se k finanční pomoci dostanou. Skutečnost je taková, že peníze, které už máme schválené z fondu soudržnosti na různé projekty, můžeme přesunout na škody po povodních. Je to férové a dobré řešení. Prostě si něco méně důležitého odpustíme a pomůžeme obětem povodní. Škoda jen, že to takhle nebylo prezentováno hned a že jsme to všichni pochopili tak, že to budou “peníze navíc”. Navíc nedostaneme nic. Ale můžeme si změnit priority, na co ty peníze použijeme. Škoda, že takhle nepostupuje i Vláda ČR v našem národním rozpočtu a místo změny priorit volí větší zadlužení. V historii je to poprvé. Při předchozích povodních žádná vláda deficit nezvyšovala. Ani ta jednobarevně socialistická v r.2002. Ale tenkrát byly rozpočtově odpovědné i socialistické vlády.",
 ];
 
 const CardSummary: React.FC = () => {
@@ -63,9 +66,16 @@ const CardSummary: React.FC = () => {
                         </div>
                         <TabsContent value="week" className='font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-md font-medium'>
                             <p className='font-[family-name:var(--font-satoshi-sans)] text-stone-400 text-lg font-medium pt-3'>
-                                <TextEffect per='word' preset='fade'>{SUMMARY}</TextEffect>
+                                <TextEffect per='word' preset='fade'>The texts are rich with <span className="text-white underline decoration-dotted">rhetorical techniques</span> designed to persuade an audience through
+                                    a mixture of <span className="text-white underline decoration-dotted">emotional appeal</span>, <span className="text-white underline decoration-dotted">selective presentation</span>, and criticism of political opponents. While they are not overtly
+                                    deceitful, there is a manipulative undertone in the way issues are framed (e.g., <span className="text-white underline decoration-dotted">false dilemmas</span>, <span className="text-white underline decoration-dotted">scapegoating</span>) and in the
+                                    selective emphasis on certain aspects of reality. The analysis suggests moderate levels of exaggeration, primarily
+                                    through <span className="text-white underline decoration-dotted">oversimplification</span> and <span className="text-white underline decoration-dotted">emotional scaremongering</span>.
+                                    While these techniques may resonate with an audience that already shares the author&apos;s views, they could alienate those
+                                    seeking more balanced, nuanced debate. The language is assertive, making use of &quot;we&quot; versus &quot;they&quot; dynamics, invoking past
+                                    experiences and positioning the speaker as a voice of reason amid a sea of populism and irresponsibility.</TextEffect>
                             </p>
-                            <CustomTags tags={["Reasonable arguments", "Populism", "Framing", "Oversimplification"]} />
+                            <CustomTags tags={["Rhetorical Techniques", "Emotional Appeal", "Selective Presentation", "False Dilemmas", "Scapegoating", "Oversimplification", "Emotional Scaremongering"]} />
                             <Separator />
                             {PARAGRAPHS.map((paragraph, index) => (
                                 <div key={index}>
@@ -90,7 +100,7 @@ const CardSummary: React.FC = () => {
                         <TabsContent value="all">All</TabsContent>
                     </Tabs>
                 </CardContent>
-            </Card>
+            </Card >
         </>
     );
 };
