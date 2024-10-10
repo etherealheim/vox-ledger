@@ -66,8 +66,8 @@ const CardSummary: React.FC = () => {
                         </div>
                         <TabsContent value="week" className='font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-md font-medium'>
                             <p className='font-[family-name:var(--font-satoshi-sans)] text-stone-400 text-lg font-medium pt-3'>
-                                <TextEffect per='word' preset='fade'>The texts are rich with <span className="text-white underline decoration-dotted">rhetorical techniques</span> designed to persuade an audience through
-                                    a mixture of <span className="text-white underline decoration-dotted">emotional appeal</span>, <span className="text-white underline decoration-dotted">selective presentation</span>, and criticism of political opponents. While they are not overtly
+                                <TextEffect per='word' preset='fade'>The texts are rich with rhetorical techniques designed to persuade an audience through
+                                    a mixture of <span className="text-white underline decoration-dotted">emotional appeal</span>, <span className="text-white underline decoration-dotted">selective presentation</span>, and <span className="text-white underline decoration-dotted">criticism</span> of political opponents. While they are not overtly
                                     deceitful, there is a manipulative undertone in the way issues are framed (e.g., <span className="text-white underline decoration-dotted">false dilemmas</span>, <span className="text-white underline decoration-dotted">scapegoating</span>) and in the
                                     selective emphasis on certain aspects of reality. The analysis suggests moderate levels of exaggeration, primarily
                                     through <span className="text-white underline decoration-dotted">oversimplification</span> and <span className="text-white underline decoration-dotted">emotional scaremongering</span>.
@@ -75,7 +75,7 @@ const CardSummary: React.FC = () => {
                                     seeking more balanced, nuanced debate. The language is assertive, making use of &quot;we&quot; versus &quot;they&quot; dynamics, invoking past
                                     experiences and positioning the speaker as a voice of reason amid a sea of populism and irresponsibility.</TextEffect>
                             </p>
-                            <CustomTags tags={["Rhetorical Techniques", "Emotional Appeal", "Selective Presentation", "False Dilemmas", "Scapegoating", "Oversimplification", "Emotional Scaremongering"]} />
+                            <CustomTags tags={["Rhetorical Techniques", "Emotional Appeal", "Selective Presentation", "False Dilemmas", "Scapegoating", "Oversimplification"]} />
                             <Separator />
                             {PARAGRAPHS.map((paragraph, index) => (
                                 <div key={index}>

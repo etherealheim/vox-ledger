@@ -7,9 +7,9 @@ type TagsProps = {
 
 const Tags: React.FC<TagsProps> = ({ tags }) => {
     return (
-        <div className='flex gap-2 pt-6 pb-6'>
+        <div className='flex flex-wrap gap-2 pt-6 pb-6 overflow-x-auto'>
             {tags.map((tag, index) => (
-                <Badge key={index} variant="outline" className='h-7'>{tag}</Badge>
+                <Badge key={index} variant="outline" className='h-7 whitespace-nowrap'>{tag}</Badge>
             ))}
         </div>
     );
