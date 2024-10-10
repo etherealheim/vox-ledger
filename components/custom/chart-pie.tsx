@@ -58,7 +58,7 @@ export function ChartPie() {
     return (
         <Card className="flex flex-col">
             <CardHeader className="items-start pb-0">
-                <CardTitle>Vote Distribution</CardTitle>
+                <CardTitle>Mostly Accepting</CardTitle>
                 <CardDescription>Data from past year</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">

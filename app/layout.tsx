@@ -39,7 +39,7 @@ const geistMono = localFont({
 
 // Metadata
 export const metadata: Metadata = {
-  title: "Vox Observer",
+  title: "Vox Ledger",
   description: "Transparency. Accountability. Truth.",
 };
 

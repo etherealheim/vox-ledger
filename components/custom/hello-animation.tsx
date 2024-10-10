@@ -8,14 +8,14 @@ const HelloAnimation = (): JSX.Element => {
         "It's time to wake up.",
         "It's time to make them accountable.",
         "It's time to make you better informed.",
-        "It's time for Vox Observer."
+        "It's time for Vox Ledger."
     ];
     const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
-        }, 4000); // Change text every 4.5 seconds to allow full transition
+        }, 4000);
 
         return () => clearInterval(interval);
     }, [texts.length]);

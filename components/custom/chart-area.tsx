@@ -40,9 +40,9 @@ export function ChartArea() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Area Chart</CardTitle>
+                <CardTitle>Underperforming</CardTitle>
                 <CardDescription className="pb-2">
-                    Showing total visitors for the last 6 months
+                    Attendance lower than 50%
                 </CardDescription>
             </CardHeader>
             <CardContent>

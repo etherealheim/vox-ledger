@@ -23,7 +23,7 @@ const Logo = () => {
               className="transition-all duration-500 ease-in-out group-hover:fill-transparent"
             />
           </svg>
-          <span className="font-bold ml-2">Vox Observer</span>
+          <span className="font-bold ml-2">Vox Ledger</span>
         </div>
       </Link>
     </div>
