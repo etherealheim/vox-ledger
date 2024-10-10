@@ -12,7 +12,7 @@ import Link from 'next/link';
 export function AccordionVote() {
     return (
         <Accordion
-            className='flex w-full flex-col divide-y divide-zinc-200 dark:divide-zinc-700 pt-4'
+            className='flex w-full flex-col  pt-4'
             transition={{ duration: 0.2, ease: 'easeInOut' }}
         >
             <AccordionItem value='vote-pro' className='py-2'>

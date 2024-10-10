@@ -8,11 +8,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChartPie } from '@/components/custom/chart-pie';
 import { ChartArea } from '@/components/custom/chart-area';
-import { Badge } from "@/components/ui/badge"
 import CardSummary from '@/components/custom/card-summary';
 import Timeline from '@/components/custom/timeline';
 
 import { AccordionVote } from '@/components/custom/accordion-vote';
+import { Counter } from '@/components/custom/counter';
 
 const CharacterPage = () => {
     // Generate Person's Name from the pathname
@@ -97,12 +97,10 @@ const CharacterPage = () => {
                     <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-lg font-medium">
                         {description}
                     </p>
-
-                    <div className='flex gap-2 pt-6'>
-                        <Badge variant="outline">Reasonable arguments</Badge>
-                        <Badge variant="outline">Populism</Badge>
-                        <Badge variant="outline">Framing</Badge>
-                        <Badge variant="outline">Oversimplification</Badge>
+                </div>
+                <div className='col-span-6 flex flex-col items-end space-y-4'>
+                    <div className="flex justify-end">
+                        <Counter />
                     </div>
                 </div>
             </section>
