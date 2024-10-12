@@ -1,6 +1,4 @@
-//import { drizzle } from 'drizzle-orm/connect';
+import { sql } from '@vercel/postgres';
+import { drizzle } from 'drizzle-orm/vercel-postgres';
 
-//async function main() {
-//    const db = await drizzle("vercel-postgres");
-//}
-//main();
+export const db = drizzle(sql);
