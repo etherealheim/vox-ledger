@@ -1,11 +1,11 @@
 "use client";
 
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr'; // Wikipedia
+import useSWR from 'swr';
 
-import { Skeleton } from "@/components/ui/skeleton"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChartPie } from '@/components/custom/chart-pie';
 import { ChartArea } from '@/components/custom/chart-area';
 import CardSummary from '@/components/custom/card-summary';
@@ -15,19 +15,18 @@ import { AccordionVote } from '@/components/custom/accordion-vote';
 import { Counter } from '@/components/custom/counter';
 
 const CharacterPage = () => {
-    // Generate Person's Name from the pathname
-    const pathname = usePathname();
-    const character =
-        pathname
-            ?.split('/')
-            .pop()
-            ?.split('-')
-            .map((word) =>
-                word.length === 1
-                    ? word.toUpperCase() + '.'
-                    : word.charAt(0).toUpperCase() + word.slice(1)
-            )
-            .join(' ') || '';
+    const params = useParams();
+    const handle = params?.handle as string | undefined;
+
+    // Convert handle to character name
+    const character = handle
+        ?.split('-')
+        .map((word) =>
+            word.length === 1
+                ? word.toUpperCase() + '.'
+                : word.charAt(0).toUpperCase() + word.slice(1)
+        )
+        .join(' ') || '';
 
     // State variables for OpenAI responses
     const [position, setPosition] = useState<string | null>(null);
@@ -36,7 +35,7 @@ const CharacterPage = () => {
     // Fetch Wikipedia description
     const fetcher = (url: string) => fetch(url).then((res) => res.json());
     const { data, error } = useSWR(
-        `https://en.wikipedia.org/api/rest_v1/page/summary/${character}`,
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(character)}`,
         fetcher
     );
 
@@ -64,7 +63,7 @@ const CharacterPage = () => {
     // Fetch position using OpenAI
     useEffect(() => {
         if (character) {
-            const prompt = `What is/was the position of ${character}? for example "Former Member of Parliament" Dont mention name. Format text with camel case letters. Use space between words double check the response`;
+            const prompt = `What is/was the position of ${character}? For example, "Former Member of Parliament". Don't mention the name. Format the text with camel case letters. Use spaces between words. Double check the response.`;
 
             fetchCompletion(prompt)
                 .then(setPosition)
@@ -73,28 +72,30 @@ const CharacterPage = () => {
     }, [character]);
 
     // Handle errors and loading states
-    if (positionError) return <div>{positionError}</div>;
-    if (error) return <div>Failed to load</div>;
-    if (!data) return <div></div>;
+    if (positionError) return <div className="text-red-500">{positionError}</div>;
+    if (error) return <div className="text-red-500">Failed to load Wikipedia data.</div>;
+    if (!data) return <div className="text-gray-500">Loading...</div>;
 
     const description = data.extract || '';
 
     return (
         <div>
+            {/* Character Information Section */}
             <section className="container mx-auto grid grid-cols-12 pt-24 gap-10">
                 <div className="col-span-6">
-                    <h1 className="text-5xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-2">
+                    <h1 className="text-5xl font-bold font-syne-sans text-stone-200 pb-2">
                         {character}
                     </h1>
                     {position ? (
-                        <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
+                        <p className="font-satoshi-sans text-stone-500 text-xl font-semibold pb-8">
                             {position}
                         </p>
                     ) : (
-                        <div className='pt-2 pb-8'><Skeleton className="w-[300px] h-[20px] rounded-xl" /></div>
-
+                        <div className='pt-2 pb-8'>
+                            <Skeleton className="w-[300px] h-[20px] rounded-xl" />
+                        </div>
                     )}
-                    <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-lg font-medium">
+                    <p className="font-satoshi-sans text-stone-300 text-lg font-medium">
                         {description}
                     </p>
                 </div>
@@ -104,10 +105,13 @@ const CharacterPage = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Recent Claims and Voting Sections */}
             <section className="container mx-auto grid grid-cols-12 pt-24 gap-10 pb-24">
+                {/* Recent Claims */}
                 <div className='col-span-8'>
                     <div>
-                        <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6'>Recent Claims</h2>
+                        <h2 className='text-3xl font-bold font-syne-sans text-stone-200 pb-6'>Recent Claims</h2>
                         <Tabs defaultValue="twitter">
                             <TabsList>
                                 <TabsTrigger value="twitter">Twitter</TabsTrigger>
@@ -126,26 +130,32 @@ const CharacterPage = () => {
                         </Tabs>
                     </div>
                 </div>
+
+                {/* Voting and Attendance */}
                 <div className='col-span-4'>
-                    <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6'>Voting</h2>
+                    <h2 className='text-3xl font-bold font-syne-sans text-stone-200 pb-6'>Voting</h2>
                     <Tabs defaultValue="chart">
                         <TabsList>
                             <TabsTrigger value="chart">Chart</TabsTrigger>
                             <TabsTrigger value="vote-log">Vote Log</TabsTrigger>
                         </TabsList>
                         <TabsContent value="chart">
-                            <ChartPie />
+                            {handle ? (
+                                <ChartPie handle={handle} />
+                            ) : (
+                                <div className="text-gray-500">Loading chart...</div>
+                            )}
                         </TabsContent>
                         <TabsContent value="vote-log">
                             <AccordionVote />
                         </TabsContent>
                     </Tabs>
-                    <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6 pt-12'>Attendance</h2>
+                    <h2 className='text-3xl font-bold font-syne-sans text-stone-200 pb-6 pt-12'>Attendance</h2>
                     <ChartArea />
                     <Timeline />
                 </div>
-            </section >
-        </div >
+            </section>
+        </div>
     );
 };
 

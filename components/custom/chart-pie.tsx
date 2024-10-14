@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Pie, PieChart } from "recharts"
+import { useEffect, useState } from "react";
+import { TrendingUp } from "lucide-react";
+import { Pie, PieChart, Cell, Label } from "recharts";
 
 import {
     Card,
@@ -10,56 +11,166 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
     ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-export const description = "A donut chart"
-
-const chartData = [
-    { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-    { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-    { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-    { browser: "other", visitors: 90, fill: "var(--color-other)" },
-]
+export const description = "A donut chart";
 
 const chartConfig = {
-    visitors: {
-        label: "Visitors",
-    },
-    chrome: {
-        label: "Chrome",
+    yes: {
+        label: "Yes",
         color: "hsl(var(--chart-1))",
     },
-    safari: {
-        label: "Safari",
+    no: {
+        label: "No",
         color: "hsl(var(--chart-2))",
     },
-    firefox: {
-        label: "Firefox",
+    abstain: {
+        label: "Abstain",
         color: "hsl(var(--chart-3))",
     },
-    edge: {
-        label: "Edge",
+    "not logged in": {
+        label: "Not Logged In",
         color: "hsl(var(--chart-4))",
     },
-    other: {
-        label: "Other",
-        color: "hsl(var(--chart-5))",
+    refrained: {
+        label: "Refrained",
+        color: "hsl(var(--chart-5))", // Added new vote type color
     },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function ChartPie() {
+type VoteType = keyof typeof chartConfig;
+
+interface VoteData {
+    votes: {
+        politicianName: string;
+        vote: string; // Keep as string to normalize dynamically
+    };
+}
+
+interface ChartDataItem {
+    name: string;
+    value: number;
+    fill: string;
+}
+
+interface ChartPieProps {
+    handle: string;
+}
+
+export function ChartPie({ handle }: ChartPieProps) {
+    const [chartData, setChartData] = useState<ChartDataItem[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (handle) {
+            setLoading(true);
+            fetch(`/api/voting/${handle}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((data: VoteData[]) => {
+                    console.log("Fetched Data:", data); // Log the fetched data
+
+                    // Normalize votes (case-insensitive)
+                    const counts = data.reduce<Record<VoteType, number>>((acc, item) => {
+                        const vote = item.votes.vote.toLowerCase() as VoteType; // Normalize to lowercase
+                        if (chartConfig[vote]) {
+                            acc[vote] = (acc[vote] || 0) + 1;
+                        }
+                        return acc;
+                    }, {} as Record<VoteType, number>);
+
+                    console.log("Vote Counts:", counts); // Log the vote counts
+
+                    // Transform the counts into chart-friendly data
+                    const transformedData: ChartDataItem[] = (Object.keys(chartConfig) as VoteType[]).map(
+                        (vote) => ({
+                            name: chartConfig[vote]?.label || vote,
+                            value: counts[vote] || 0, // Default to 0 if not present
+                            fill: getColorForVote(vote),
+                        })
+                    );
+
+                    console.log("Transformed Data:", transformedData); // Log the transformed data
+
+                    setChartData(transformedData);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    setError('Failed to load voting data.');
+                    setLoading(false);
+                });
+        }
+    }, [handle]);
+
+    const getColorForVote = (vote: VoteType) => {
+        return chartConfig[vote]?.color || "hsl(var(--chart-1))";
+    };
+
+    if (loading) {
+        return (
+            <Card className="flex flex-col">
+                <CardHeader className="items-start pb-0">
+                    <CardTitle>Loading Voting Results...</CardTitle>
+                    <CardDescription>Please wait while we fetch the data.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-1 pb-0">
+                    <div className="mx-auto aspect-square max-h-[250px] flex items-center justify-center">
+                        <p>Loading...</p>
+                    </div>
+                </CardContent>
+                <CardFooter className="flex-col gap-2 text-sm">
+                    <div className="flex items-center gap-2 font-medium leading-none">
+                        <p>Loading trend...</p>
+                    </div>
+                    <div className="leading-none text-muted-foreground">
+                        <p>Showing total votes for the current session</p>
+                    </div>
+                </CardFooter>
+            </Card>
+        );
+    }
+
+    if (error) {
+        return (
+            <Card className="flex flex-col">
+                <CardHeader className="items-start pb-0">
+                    <CardTitle>Error</CardTitle>
+                    <CardDescription>{error}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-1 pb-0">
+                    <div className="mx-auto aspect-square max-h-[250px] flex items-center justify-center">
+                        <p>{error}</p>
+                    </div>
+                </CardContent>
+                <CardFooter className="flex-col gap-2 text-sm">
+                    <div className="flex items-center gap-2 font-medium leading-none">
+                        <p>Unable to display trend.</p>
+                    </div>
+                    <div className="leading-none text-muted-foreground">
+                        <p>Please try again later.</p>
+                    </div>
+                </CardFooter>
+            </Card>
+        );
+    }
+
     return (
         <Card className="flex flex-col">
             <CardHeader className="items-start pb-0">
-                <CardTitle>Mostly Accepting</CardTitle>
-                <CardDescription>Data from past year</CardDescription>
+                <CardTitle>Mostly Agreeable</CardTitle>
+                <CardDescription>Overview of voting sessions</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
@@ -73,21 +184,57 @@ export function ChartPie() {
                         />
                         <Pie
                             data={chartData}
-                            dataKey="visitors"
-                            nameKey="browser"
+                            dataKey="value"
+                            nameKey="name"
                             innerRadius={60}
-                        />
+                            strokeWidth={5}
+                            aria-label="Voting Results Pie Chart"
+                        >
+                            {chartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
+                            <Label
+                                content={({ viewBox }) => {
+                                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                        return (
+                                            <text
+                                                x={viewBox.cx}
+                                                y={viewBox.cy}
+                                                textAnchor="middle"
+                                                dominantBaseline="middle"
+                                            >
+                                                <tspan
+                                                    x={viewBox.cx}
+                                                    y={viewBox.cy}
+                                                    className="fill-foreground text-3xl font-bold"
+                                                >
+                                                    {chartData.reduce((acc, entry) => acc + entry.value, 0).toLocaleString()}
+                                                </tspan>
+                                                <tspan
+                                                    x={viewBox.cx}
+                                                    y={(viewBox.cy || 0) + 24}
+                                                    className="fill-muted-foreground"
+                                                >
+                                                    Votes
+                                                </tspan>
+                                            </text>
+                                        )
+                                    }
+                                }}
+                            />
+                        </Pie>
                     </PieChart>
                 </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">
                 <div className="flex items-center gap-2 font-medium leading-none">
-                    &quot;Yes&quot; is trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+                    &quot;Yes&quot; is trending up by 5.2% this month{" "}
+                    <TrendingUp className="h-4 w-4" />
                 </div>
                 <div className="leading-none text-muted-foreground">
-                    Showing total visitors for the last 6 months
+                    Showing total votes for the current session
                 </div>
             </CardFooter>
         </Card>
-    )
+    );
 }
