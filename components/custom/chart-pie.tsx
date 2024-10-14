@@ -67,6 +67,8 @@ export function ChartPie({ handle }: ChartPieProps) {
     const [chartData, setChartData] = useState<ChartDataItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [majorityLabel, setMajorityLabel] = useState<string>("Mostly Agreeable");
+
 
     useEffect(() => {
         if (handle) {
@@ -100,6 +102,30 @@ export function ChartPie({ handle }: ChartPieProps) {
                             fill: getColorForVote(vote),
                         })
                     );
+
+                    // Function to determine the majority label based on vote counts
+                    const determineMajorityLabel = (counts: Record<VoteType, number>): string => {
+                        const majorityVote = Object.entries(counts).reduce<[VoteType, number]>((max, entry) => {
+                            return entry[1] > max[1] ? [entry[0] as VoteType, entry[1]] : max;
+                        }, ["yes", 0]);
+
+                        const isTied = Object.values(counts).filter(count => count === majorityVote[1]).length > 1;
+
+                        const majorityLabelMap: Record<VoteType, string> = {
+                            yes: "Mostly Agreeable",
+                            no: "Mostly Disagreeable",
+                            abstain: "Mostly Abstained",
+                            "not logged in": "Mostly Not Logged In",
+                            refrained: "Mostly Refrained",
+                        };
+
+                        return isTied ? "Undecided" : (majorityLabelMap[majorityVote[0]] || "Mostly Agreeable");
+                    };
+
+                    const majorityLabel = determineMajorityLabel(counts);
+                    setMajorityLabel(majorityLabel);
+
+                    console.log("Majority Label:", majorityLabel);
 
                     console.log("Transformed Data:", transformedData); // Log the transformed data
 
@@ -169,7 +195,7 @@ export function ChartPie({ handle }: ChartPieProps) {
     return (
         <Card className="flex flex-col">
             <CardHeader className="items-start pb-0">
-                <CardTitle>Mostly Agreeable</CardTitle>
+                <CardTitle>{majorityLabel}</CardTitle>
                 <CardDescription>Overview of voting sessions</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
