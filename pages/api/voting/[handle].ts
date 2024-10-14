@@ -6,16 +6,7 @@ import { eq } from 'drizzle-orm';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { handle } = req.query;
 
-    if (!handle || typeof handle !== 'string') {
-        return res.status(400).json({ error: 'Invalid or missing handle parameter' });
-    }
-
     try {
-        // Ensure the database connection string is available
-        if (!process.env.DATABASE_URL) {
-            return res.status(500).json({ error: 'Missing database connection string' });
-        }
-
         // Fetch all votes (yes, no, abstain, etc.) for a specific politician
         const results = await db
             .select({
@@ -32,11 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             .from(votingSessions)
             .leftJoin(votes, eq(votes.votingSessionId, votingSessions.id))
             .leftJoin(politicians, eq(votes.politicianId, politicians.id))
-            .where(eq(politicians.handle, handle));
-
-        if (results.length === 0) {
-            return res.status(404).json({ error: 'No voting data found for the given handle' });
-        }
+            .where(eq(politicians.handle, handle as string));
 
         res.status(200).json(results);
     } catch (error) {
