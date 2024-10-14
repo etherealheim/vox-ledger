@@ -11,6 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
+        // Ensure the database connection string is available
+        if (!process.env.DATABASE_URL) {
+            return res.status(500).json({ error: 'Missing database connection string' });
+        }
+
         // Fetch all votes (yes, no, abstain, etc.) for a specific politician
         const results = await db
             .select({
