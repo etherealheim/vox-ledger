@@ -10,9 +10,8 @@ import {
 export default function Dashboard() {
     return (
         <div>
-
-            <section className="h-screen flex flex-col justify-center">
-                <div className="text-center mb-8 mt-[-120px] font-[family-name:var(--font-geist-mono)]">
+            <section className="container mx-auto grid-cols-12">
+                <div className="col-span-12 text-center mb-8 pt-48 font-[family-name:var(--font-geist-mono)]">
                     <p className="text-xl font-medium text-stone-400 pb-2">Welcome…&nbsp;
                         <TooltipProvider>
                             <Tooltip>
@@ -28,7 +27,9 @@ export default function Dashboard() {
                     <p className="text-md text-stone-600">Search for your favourite public figure.</p>
 
                 </div>
-                <SearchBox />
+                <div className="col-span-12">
+                    <SearchBox />
+                </div>
             </section >
         </div >
     );

@@ -24,23 +24,23 @@ export const description = "A donut chart";
 const chartConfig = {
     yes: {
         label: "Yes",
-        color: "hsl(var(--chart-1))",
+        color: "#166534",
     },
     no: {
         label: "No",
-        color: "hsl(var(--chart-2))",
+        color: "#7f1d1d",
     },
     abstain: {
         label: "Abstain",
-        color: "hsl(var(--chart-3))",
+        color: "#44403c",
     },
     "not logged in": {
-        label: "Not Logged In",
-        color: "hsl(var(--chart-4))",
+        label: "Not Logged",
+        color: "#1c1917",
     },
     refrained: {
         label: "Refrained",
-        color: "hsl(var(--chart-5))", // Added new vote type color
+        color: "#44403c", // Added new vote type color
     },
 } satisfies ChartConfig;
 
@@ -196,7 +196,7 @@ export function ChartPie({ handle }: ChartPieProps) {
         <Card className="flex flex-col">
             <CardHeader className="items-start pb-0">
                 <CardTitle>{majorityLabel}</CardTitle>
-                <CardDescription>Overview of voting sessions</CardDescription>
+                <CardDescription>Overview of all voting sessions</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer

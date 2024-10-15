@@ -31,7 +31,7 @@ export const description = "A simple area chart showing monthly attendance";
 const chartConfig = {
     attendance: {
         label: "Attendance",
-        color: "hsl(var(--chart-1))",
+        color: "#57534e",
     },
 } satisfies ChartConfig;
 
@@ -173,7 +173,7 @@ export function ChartArea({ handle }: ChartAreaProps) {
             <CardHeader className="items-start pb-0">
                 <CardTitle>{averageText}</CardTitle>
                 <CardDescription className="pb-2">
-                    Attendance average of {averageAttendance.toFixed(1)}%
+                    Attendance average of {averageAttendance.toFixed(1)}% YTD
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
@@ -190,8 +190,8 @@ export function ChartArea({ handle }: ChartAreaProps) {
                         >
                             <defs>
                                 <linearGradient id="colorAttendance" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#57534e" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#57534e" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -204,15 +204,18 @@ export function ChartArea({ handle }: ChartAreaProps) {
                             />
                             <YAxis
                                 domain={[0, 100]}
-                                tickFormatter={(value) => `${value}%`}
+                                tickFormatter={(value) => `${value}`}
                                 tickLine={false}
                                 axisLine={false}
                             />
-                            <Tooltip content={<ChartTooltipContent />} />
+                            <Tooltip
+                                content={<ChartTooltipContent />}
+                                formatter={(value: number) => ["Attendance: ", `${value}%`]}
+                            />
                             <Area
                                 type="monotone"
                                 dataKey="attendancePercentage"
-                                stroke="hsl(var(--chart-1))"
+                                stroke="#78716c"
                                 fillOpacity={1}
                                 fill="url(#colorAttendance)"
                             />
