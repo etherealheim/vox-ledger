@@ -6,13 +6,12 @@ import useSWR from 'swr';
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { ChartPie } from '@/components/custom/chart-pie';
 import { ChartArea } from '@/components/custom/chart-area';
 import CardSummary from '@/components/custom/card-summary';
 import Timeline from '@/components/custom/timeline';
-
 import { AccordionVote } from '@/components/custom/accordion-vote';
-import { Counter } from '@/components/custom/counter';
 
 const CharacterPage = () => {
     const params = useParams();
@@ -100,9 +99,7 @@ const CharacterPage = () => {
                     </p>
                 </div>
                 <div className='col-span-6 flex flex-col items-end space-y-4'>
-                    <div className="flex justify-end">
-                        <Counter />
-                    </div>
+
                 </div>
             </section>
 

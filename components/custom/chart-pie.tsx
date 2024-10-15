@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { Pie, PieChart, Cell, Label } from "recharts";
+import { Switch } from "@/components/ui/switch"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import {
     Card,
@@ -194,8 +201,21 @@ export function ChartPie({ handle }: ChartPieProps) {
 
     return (
         <Card className="flex flex-col">
-            <CardHeader className="items-start pb-0">
-                <CardTitle>{majorityLabel}</CardTitle>
+            <CardHeader className="flex justify-between items-stretch pb-0">
+                <CardTitle className="flex items-stretch gap-2 justify-between">
+                    {majorityLabel}
+
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Switch />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>All Time</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </CardTitle>
                 <CardDescription>Overview of all voting sessions</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
