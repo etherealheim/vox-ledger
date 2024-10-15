@@ -6,6 +6,7 @@ export const politicians = pgTable('politicians', {
     name: text('name').notNull().unique(),      // Politician's full name
     handle: text('handle').notNull().unique(),  // Politician handle (e.g., "miroslav-kalousek")
     twitter: text('twitter'),                   // Optional Twitter link
+    twitterUsername: text('twitter_username'),  // Politician's Twitter handle
     wikipedia: text('wikipedia'),               // Optional Wikipedia link
 });
 

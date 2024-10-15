@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
 
-const HelloAnimation = (): JSX.Element => {
+const HelloAnimation: React.FC = React.memo(function HelloAnimation() {
     const texts: string[] = [
         "Hello World.",
         "It's time to wake up.",
@@ -38,6 +39,8 @@ const HelloAnimation = (): JSX.Element => {
             </section>
         </div>
     );
-};
+});
+
+
 
 export default HelloAnimation;

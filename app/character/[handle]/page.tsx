@@ -151,7 +151,11 @@ const CharacterPage = () => {
                         </TabsContent>
                     </Tabs>
                     <h2 className='text-3xl font-bold font-syne-sans text-stone-200 pb-6 pt-12'>Attendance</h2>
-                    <ChartArea />
+                    {handle ? (
+                        <ChartArea handle={handle} />
+                    ) : (
+                        <div className="text-gray-500">Loading attendance chart...</div>
+                    )}
                     <Timeline />
                 </div>
             </section>
