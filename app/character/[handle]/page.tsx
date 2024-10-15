@@ -82,11 +82,11 @@ const CharacterPage = () => {
             {/* Character Information Section */}
             <section className="container mx-auto grid grid-cols-12 pt-24 gap-10">
                 <div className="col-span-6">
-                    <h1 className="text-5xl font-bold font-syne-sans text-stone-200 pb-2">
+                    <h1 className="text-5xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-2">
                         {character}
                     </h1>
                     {position ? (
-                        <p className="font-satoshi-sans text-stone-500 text-xl font-semibold pb-8">
+                        <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
                             {position}
                         </p>
                     ) : (
@@ -94,7 +94,7 @@ const CharacterPage = () => {
                             <Skeleton className="w-[300px] h-[20px] rounded-xl" />
                         </div>
                     )}
-                    <p className="font-satoshi-sans text-stone-300 text-lg font-medium">
+                    <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-lg font-medium">
                         {description}
                     </p>
                 </div>
@@ -108,7 +108,7 @@ const CharacterPage = () => {
                 {/* Recent Claims */}
                 <div className='col-span-8'>
                     <div>
-                        <h2 className='text-3xl font-bold font-syne-sans text-stone-200 pb-6'>Recent Claims</h2>
+                        <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6'>Recent Claims</h2>
                         <Tabs defaultValue="twitter">
                             <TabsList>
                                 <TabsTrigger value="twitter">Twitter</TabsTrigger>
@@ -130,7 +130,7 @@ const CharacterPage = () => {
 
                 {/* Voting and Attendance */}
                 <div className='col-span-4'>
-                    <h2 className='text-3xl font-bold font-syne-sans text-stone-200 pb-6'>Voting</h2>
+                    <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6'>Voting</h2>
                     <Tabs defaultValue="chart">
                         <TabsList>
                             <TabsTrigger value="chart">Chart</TabsTrigger>
@@ -147,7 +147,7 @@ const CharacterPage = () => {
                             <AccordionVote />
                         </TabsContent>
                     </Tabs>
-                    <h2 className='text-3xl font-bold font-syne-sans text-stone-200 pb-6 pt-12'>Attendance</h2>
+                    <h2 className='text-3xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-6 pt-12'>Attendance</h2>
                     {handle ? (
                         <ChartArea handle={handle} />
                     ) : (

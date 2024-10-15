@@ -200,7 +200,7 @@ export function ChartPie({ handle }: ChartPieProps) {
     }
 
     return (
-        <Card className="flex flex-col">
+        <Card className="flex flex-col font-[family-name:var(--font-satoshi-sans)]">
             <CardHeader className="flex justify-between items-stretch pb-0">
                 <CardTitle className="flex items-stretch gap-2 justify-between">
                     {majorityLabel}
@@ -216,7 +216,7 @@ export function ChartPie({ handle }: ChartPieProps) {
                         </Tooltip>
                     </TooltipProvider>
                 </CardTitle>
-                <CardDescription>Overview of all voting sessions</CardDescription>
+                <CardDescription>Overview of voting sessions YTD</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer

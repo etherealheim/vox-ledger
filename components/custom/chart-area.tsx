@@ -169,7 +169,7 @@ export function ChartArea({ handle }: ChartAreaProps) {
     const averageAttendance = chartData.length > 0 ? totalAttendance / chartData.length : 0;
 
     return (
-        <Card className="flex flex-col">
+        <Card className="flex flex-col font-[family-name:var(--font-satoshi-sans)]">
             <CardHeader className="items-start pb-0">
                 <CardTitle>{averageText}</CardTitle>
                 <CardDescription className="pb-2">
