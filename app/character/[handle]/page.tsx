@@ -73,7 +73,7 @@ const CharacterPage = () => {
     // Handle errors and loading states
     if (positionError) return <div className="text-red-500">{positionError}</div>;
     if (error) return <div className="text-red-500">Failed to load Wikipedia data.</div>;
-    if (!data) return <div className="text-gray-500">Loading...</div>;
+    if (!data) return <div className="text-gray-500"></div>;
 
     const description = data.extract || '';
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import {
     Area,
     AreaChart,
@@ -91,22 +91,38 @@ export function ChartArea({ handle }: ChartAreaProps) {
                         : "Performing well";
                 setAverageText(calculatedAverageText);
 
-                // Calculate trend based on the latest two months
-                if (validData.length >= 2) {
-                    const latest = validData[validData.length - 1].attendancePercentage;
-                    const previous = validData[validData.length - 2].attendancePercentage;
-                    const difference = latest - previous;
-                    const trendPercentage = Math.abs(difference).toFixed(1);
-                    if (difference > 0) {
-                        setTrend(`Trending up by ${trendPercentage}%`);
-                    } else if (difference < 0) {
-                        setTrend(`Trending down by ${trendPercentage}%`);
+                // Calculate trend based on the latest three months
+                try {
+                    // Check if there's enough data for the last 3 months
+                    if (validData.length >= 3) {
+                        const latest = validData.slice(-3).map(d => d.attendancePercentage);
+                        const previous = validData.slice(-4, -1).map(d => d.attendancePercentage);
+
+                        // Calculate the averages for the latest and previous 3 months
+                        const latestAverage = latest.reduce((sum, value) => sum + value, 0) / latest.length;
+                        const previousAverage = previous.reduce((sum, value) => sum + value, 0) / previous.length;
+
+                        // Calculate the difference between the latest and previous averages
+                        const difference = latestAverage - previousAverage;
+                        const trendPercentage = Math.abs(difference).toFixed(1);
+
+                        // Determine if the trend is up, down, or unchanged
+                        if (difference > 0) {
+                            setTrend(`Trending up by ${trendPercentage}%`);
+                        } else if (difference < 0) {
+                            setTrend(`Trending down by ${trendPercentage}%`);
+                        } else {
+                            setTrend("No change in the last three months");
+                        }
                     } else {
-                        setTrend("No change this month");
+                        setTrend("Insufficient data to determine trend");
                     }
-                } else {
-                    setTrend("Insufficient data to determine trend");
+                } catch (error) {
+                    console.error("Error fetching attendance data:", error);
+                    setError("Failed to load attendance data.");
+                    setLoading(false);
                 }
+
             } catch (error) {
                 console.error("Error fetching attendance data:", error);
                 setError("Failed to load attendance data.");
@@ -173,7 +189,7 @@ export function ChartArea({ handle }: ChartAreaProps) {
             <CardHeader className="items-start pb-0">
                 <CardTitle>{averageText}</CardTitle>
                 <CardDescription className="pb-2">
-                    Attendance average of {averageAttendance.toFixed(1)}% YTD
+                    Attendance average of {averageAttendance.toFixed(1)}% past 6 months
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
@@ -225,10 +241,10 @@ export function ChartArea({ handle }: ChartAreaProps) {
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">
                 <div className="flex items-center gap-2 font-medium leading-none">
-                    {trend} <TrendingUp className="h-4 w-4" />
+                    {trend} {trend.includes("up") ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                 </div>
                 <div className="leading-none text-muted-foreground">
-                    Showing attendance from January to June 2024
+                    Based on data from the last three months.
                 </div>
             </CardFooter>
         </Card>

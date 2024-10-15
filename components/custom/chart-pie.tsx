@@ -208,13 +208,17 @@ export function ChartPie({ handle }: ChartPieProps) {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger>
-                                <Switch />
+                                <div className="flex items-center gap-2">
+                                    <Switch />
+                                    <span className="text-sm text-muted-foreground">All Time</span>
+                                </div>
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>All Time</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
+
                 </CardTitle>
                 <CardDescription>Overview of voting sessions YTD</CardDescription>
             </CardHeader>
