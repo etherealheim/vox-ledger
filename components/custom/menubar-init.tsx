@@ -50,7 +50,7 @@ export default function MenubarInit() {
                         <MenubarShortcut>⌥A</MenubarShortcut>
                     </MenubarItem>
                     <MenubarItem className="flex justify-between">
-                        <Link href="/character/miroslav-kalousek">
+                        <Link href="/character/petr-fiala">
                             Dummy Target
                         </Link>
                     </MenubarItem>
