@@ -72,12 +72,14 @@ export function ChartArea({ handle }: ChartAreaProps) {
                 const data: AttendanceData[] = await response.json();
                 console.log("Fetched Attendance Data:", data);
 
-                // Validate data
-                const validData = data.filter(
-                    (d) =>
-                        typeof d.attendancePercentage === "number" &&
-                        !isNaN(d.attendancePercentage)
-                );
+                // Validate and filter data for the last 6 months
+                const validData = data
+                    .filter(
+                        (d) =>
+                            typeof d.attendancePercentage === "number" &&
+                            !isNaN(d.attendancePercentage)
+                    )
+                    .slice(-6); // Only keep the last 6 months of data
                 setChartData(validData);
                 setLoading(false);
 
@@ -198,10 +200,10 @@ export function ChartArea({ handle }: ChartAreaProps) {
                         <AreaChart
                             data={chartData}
                             margin={{
-                                top: 10,
-                                right: 30,
-                                left: 0,
-                                bottom: 0,
+                                top: 20,
+                                right: 0,
+                                left: -30,
+                                bottom: 20,
                             }}
                         >
                             <defs>
