@@ -27,6 +27,20 @@ const handleToNameMap: Record<string, string> = {
   'milos-zeman': 'Miloš Zeman'
 };
 
+// Mapping of handles to positions (replacing OpenAI functionality)
+const handleToPositionMap: Record<string, string> = {
+  'petr-fiala': 'Prime Minister of the Czech Republic',
+  'andrej-babis': 'Former Prime Minister, Leader of ANO Party',
+  'marketa-pekarova-adamova': 'Speaker of the Chamber of Deputies',
+  'ivan-bartos': 'Deputy Prime Minister',
+  'tomio-okamura': 'Leader of Freedom and Direct Democracy Party',
+  'vit-rakusan': 'Minister of the Interior',
+  'marian-jurecka': 'Minister of Labor and Social Affairs',
+  'jana-cernochova': 'Minister of Defense',
+  'zbynek-stanjura': 'Minister of Finance',
+  'milos-zeman': 'Former President of the Czech Republic'
+};
+
 const CharacterPage = () => {
     const params = useParams();
     const handle = params?.handle as string | undefined;
@@ -44,9 +58,8 @@ const CharacterPage = () => {
             .join(' ')
     ) : '';
 
-    // State variables for OpenAI responses
-    const [position, setPosition] = useState<string | null>(null);
-    const [positionError, setPositionError] = useState<string | null>(null);
+    // Get position from mapping or use a default
+    const position = handle ? handleToPositionMap[handle] || 'Czech Politician' : '';
 
     // Fetch Wikipedia description
     const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -55,40 +68,7 @@ const CharacterPage = () => {
         fetcher
     );
 
-    // Reusable function to fetch OpenAI completions
-    const fetchCompletion = async (prompt: string) => {
-        try {
-            const res = await fetch('/api/openai', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                return data.text;
-            } else {
-                console.error('Error fetching completion:', data.error);
-                return null;
-            }
-        } catch (error) {
-            console.error('Error fetching completion:', error);
-            return null;
-        }
-    };
-
-    // Fetch position using OpenAI
-    useEffect(() => {
-        if (character) {
-            const prompt = `What is/was the position of ${character}? For example, "Former Member of Parliament". Don't mention the name. Format the text with camel case letters. Use spaces between words. Double check the response.`;
-
-            fetchCompletion(prompt)
-                .then(setPosition)
-                .catch(() => setPositionError('Error fetching position'));
-        }
-    }, [character]);
-
     // Handle errors and loading states
-    if (positionError) return <div className="text-red-500">{positionError}</div>;
     if (error) return <div className="text-red-500">Failed to load Wikipedia data.</div>;
     if (!data) return <div className="text-gray-500"></div>;
 
@@ -102,15 +82,9 @@ const CharacterPage = () => {
                     <h1 className="text-5xl font-bold font-[family-name:var(--font-syne-sans)] text-stone-200 pb-2">
                         {character}
                     </h1>
-                    {position ? (
-                        <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
-                            {position}
-                        </p>
-                    ) : (
-                        <div className='pt-2 pb-8'>
-                            <Skeleton className="w-[300px] h-[20px] rounded-xl" />
-                        </div>
-                    )}
+                    <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-500 text-xl font-semibold pb-8">
+                        {position}
+                    </p>
                     <p className="font-[family-name:var(--font-satoshi-sans)] text-stone-300 text-lg font-medium">
                         {description}
                     </p>

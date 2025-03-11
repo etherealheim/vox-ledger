@@ -28,8 +28,8 @@ export default authMiddleware({
     "/api/health",          // Health check endpoint
   ],
   
-  // Debug mode for development environment only
-  debug: process.env.NODE_ENV === 'development',
+  // Disable debug mode to prevent terminal spam
+  debug: false,
 });
 
 /**
