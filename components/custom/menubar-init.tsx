@@ -11,17 +11,21 @@ import {
 } from "@/components/ui/menubar"
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function MenubarInit() {
+    const router = useRouter();
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.altKey && e.key === 'a') {
+            // Command+D for Dashboard (metaKey for Mac, ctrlKey for Windows/Linux)
+            if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
                 e.preventDefault();
-                window.location.href = "/dashboard";
+                router.push("/dashboard");
             } else if (e.altKey && e.key === 's') {
                 e.preventDefault();
-                window.location.href = "/manifesto";
+                router.push("/manifesto");
             }
         };
 
@@ -30,35 +34,52 @@ export default function MenubarInit() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, []);
+    }, [router]);
+
+    const handleNavigation = (path: string) => {
+        router.push(path);
+    };
 
     return (
-        <Menubar>
+        <Menubar className="bg-transparent border-none shadow-none">
             <MenubarMenu>
-                <MenubarTrigger>
-                    <Link href="/">Home</Link>
+                <MenubarTrigger 
+                    className="hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                    onClick={() => handleNavigation("/")}
+                >
+                    Home
                 </MenubarTrigger>
-
             </MenubarMenu>
+            
             <MenubarMenu>
-                <MenubarTrigger>Navigation</MenubarTrigger>
-                <MenubarContent>
-                    <MenubarItem className="flex justify-between">
-                        <Link href="/dashboard">
-                            Dashboard
-                        </Link>
-                        <MenubarShortcut>⌥A</MenubarShortcut>
+                <MenubarTrigger className="hover:bg-accent hover:text-accent-foreground cursor-pointer">
+                    Navigation
+                </MenubarTrigger>
+                <MenubarContent 
+                    align="start"
+                    alignOffset={0}
+                    sideOffset={8}
+                    className="bg-background border rounded-md shadow-md"
+                >
+                    <MenubarItem 
+                        className="cursor-pointer hover:bg-accent hover:text-accent-foreground" 
+                        onSelect={() => handleNavigation("/dashboard")}
+                    >
+                        Dashboard
+                        <MenubarShortcut>⌘D</MenubarShortcut>
                     </MenubarItem>
-                    <MenubarItem className="flex justify-between">
-                        <Link href="/character/petr-fiala">
-                            Dummy Target
-                        </Link>
+                    <MenubarItem 
+                        className="cursor-pointer hover:bg-accent hover:text-accent-foreground" 
+                        onSelect={() => handleNavigation("/character/petr-fiala")}
+                    >
+                        Dummy Target
                     </MenubarItem>
                     <MenubarSeparator />
-                    <MenubarItem className="flex justify-between">
-                        <Link href="/manifesto">
-                            Manifesto
-                        </Link>
+                    <MenubarItem 
+                        className="cursor-pointer hover:bg-accent hover:text-accent-foreground" 
+                        onSelect={() => handleNavigation("/manifesto")}
+                    >
+                        Manifesto
                         <MenubarShortcut>⌥S</MenubarShortcut>
                     </MenubarItem>
                 </MenubarContent>

@@ -28,7 +28,7 @@ export default function Dashboard() {
 
                 </div>
                 <div className="col-span-12">
-                    <SearchBox />
+                    <SearchBox autoFocus={true} />
                 </div>
             </section >
         </div >

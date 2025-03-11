@@ -6,10 +6,16 @@ import {
     TargetAndTransition,
     Variants,
 } from 'framer-motion';
-import React from 'react';
+import React, { useMemo } from 'react';
 
+/**
+ * Available animation presets for text effects
+ */
 type PresetType = 'blur' | 'shake' | 'scale' | 'fade' | 'slide';
 
+/**
+ * Props for the TextEffect component
+ */
 type TextEffectProps = {
     children: React.ReactNode;
     per?: 'word' | 'char' | 'line';
@@ -26,12 +32,18 @@ type TextEffectProps = {
     segmentWrapperClassName?: string;
 };
 
+/**
+ * Default stagger times for different animation granularities
+ */
 const defaultStaggerTimes: Record<'char' | 'word' | 'line', number> = {
     char: 0.03,
     word: 0.05,
     line: 0.1,
 };
 
+/**
+ * Default container animation variants
+ */
 const defaultContainerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -45,6 +57,9 @@ const defaultContainerVariants: Variants = {
     },
 };
 
+/**
+ * Default item animation variants
+ */
 const defaultItemVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -53,6 +68,9 @@ const defaultItemVariants: Variants = {
     exit: { opacity: 0 },
 };
 
+/**
+ * Predefined animation presets
+ */
 const presetVariants: Record<
     PresetType,
     { container: Variants; item: Variants }
@@ -99,26 +117,39 @@ const presetVariants: Record<
     },
 };
 
+/**
+ * Component that animates individual segments (characters, words, or lines)
+ */
 const AnimationComponent: React.FC<{
     segment: React.ReactNode;
     variants: Variants;
     per: 'line' | 'word' | 'char';
     segmentWrapperClassName?: string;
 }> = React.memo(({ segment, variants, per, segmentWrapperClassName }) => {
-    const content =
-        per === 'line' ? (
-            <motion.span variants={variants} className='block'>
-                {segment}
-            </motion.span>
-        ) : per === 'word' ? (
-            <motion.span
-                aria-hidden='true'
-                variants={variants}
-                className='inline-block whitespace-pre'
-            >
-                {segment}
-            </motion.span>
-        ) : (
+    // Render different content based on animation granularity
+    const content = useMemo(() => {
+        if (per === 'line') {
+            return (
+                <motion.span variants={variants} className='block'>
+                    {segment}
+                </motion.span>
+            );
+        } 
+        
+        if (per === 'word') {
+            return (
+                <motion.span
+                    aria-hidden='true'
+                    variants={variants}
+                    className='inline-block whitespace-pre'
+                >
+                    {segment}
+                </motion.span>
+            );
+        }
+        
+        // Character-level animation
+        return (
             <motion.span className='inline-block whitespace-pre'>
                 {Array.from(segment as string).map((char, charIndex) => (
                     <motion.span
@@ -132,7 +163,9 @@ const AnimationComponent: React.FC<{
                 ))}
             </motion.span>
         );
+    }, [segment, variants, per]);
 
+    // Apply wrapper class if provided
     if (!segmentWrapperClassName) {
         return content;
     }
@@ -148,6 +181,16 @@ const AnimationComponent: React.FC<{
 
 AnimationComponent.displayName = 'AnimationComponent';
 
+/**
+ * TextEffect component that animates text with various effects
+ * 
+ * Features:
+ * - Character, word, or line-level animation
+ * - Multiple animation presets
+ * - Custom animation variants
+ * - Configurable delay and staggering
+ * - Trigger control for animation start
+ */
 export function TextEffect({
     children,
     per = 'word',
@@ -160,45 +203,60 @@ export function TextEffect({
     onAnimationComplete,
     segmentWrapperClassName,
 }: TextEffectProps) {
-    const segments: React.ReactNode[] = React.Children.toArray(children).flatMap(
-        (child) => {
-            if (typeof child === 'string') {
-                if (per === 'line') {
-                    return child.split('\n');
-                } else if (per === 'word') {
-                    return child.split(/(\s+)/);
-                } else {
-                    return child.split('');
+    // Split content into segments based on animation granularity
+    const segments = useMemo(() => {
+        return React.Children.toArray(children).flatMap(
+            (child) => {
+                if (typeof child === 'string') {
+                    if (per === 'line') {
+                        return child.split('\n');
+                    } else if (per === 'word') {
+                        return child.split(/(\s+)/);
+                    } else {
+                        return child.split('');
+                    }
                 }
+                return child;
             }
-            return child;
-        }
-    );
+        );
+    }, [children, per]);
 
+    // Get the appropriate motion component
     const MotionTag = motion[as as keyof typeof motion] as typeof motion.div;
-    const selectedVariants = preset
-        ? presetVariants[preset]
-        : { container: defaultContainerVariants, item: defaultItemVariants };
+    
+    // Select animation variants based on preset or defaults
+    const selectedVariants = useMemo(() => {
+        return preset
+            ? presetVariants[preset]
+            : { container: defaultContainerVariants, item: defaultItemVariants };
+    }, [preset]);
+    
     const containerVariants = variants?.container || selectedVariants.container;
     const itemVariants = variants?.item || selectedVariants.item;
+    
+    // For accessibility, provide an aria-label when animating at character or word level
     const ariaLabel = per === 'line' ? undefined : segments.join('');
 
+    // Get the appropriate stagger timing
     const stagger = defaultStaggerTimes[per];
 
-    const delayedContainerVariants: Variants = {
-        hidden: containerVariants.hidden,
-        visible: {
-            ...containerVariants.visible,
-            transition: {
-                ...(containerVariants.visible as TargetAndTransition)?.transition,
-                staggerChildren:
-                    (containerVariants.visible as TargetAndTransition)?.transition
-                        ?.staggerChildren || stagger,
-                delayChildren: delay,
+    // Create container variants with delay
+    const delayedContainerVariants = useMemo(() => {
+        return {
+            hidden: containerVariants.hidden,
+            visible: {
+                ...containerVariants.visible,
+                transition: {
+                    ...(containerVariants.visible as TargetAndTransition)?.transition,
+                    staggerChildren:
+                        (containerVariants.visible as TargetAndTransition)?.transition
+                            ?.staggerChildren || stagger,
+                    delayChildren: delay,
+                },
             },
-        },
-        exit: containerVariants.exit,
-    };
+            exit: containerVariants.exit,
+        };
+    }, [containerVariants, stagger, delay]);
 
     return (
         <AnimatePresence mode='popLayout'>

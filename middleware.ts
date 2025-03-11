@@ -1,19 +1,48 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { authMiddleware } from "@clerk/nextjs/server";
 
-// Define routes that should be protected
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/manifesto', '/character/(.*)']);
-
-export default clerkMiddleware((auth, req) => {
-    if (isProtectedRoute(req)) {
-        auth().protect(); // Protect the route if it matches the defined criteria
-    }
+/**
+ * Clerk authentication middleware configuration
+ * 
+ * This middleware protects routes based on authentication status.
+ * It allows public access to specified routes while requiring authentication for others.
+ */
+export default authMiddleware({
+  // Public routes that don't require authentication
+  publicRoutes: [
+    "/",                    // Home page
+    "/api/webhook",         // Webhooks
+    "/api/search",          // Search API
+    "/api/track-search",    // Search tracking API
+    "/api/attendance/(.*)", // Attendance data API
+    "/sign-in",             // Sign in page
+    "/sign-up",             // Sign up page
+    "/manifesto",           // Manifesto page
+    "/api/(.*)public(.*)",  // Any API route with 'public' in the path
+  ],
+  
+  // Routes to ignore (not checked by Clerk)
+  ignoredRoutes: [
+    "/api/webhook",         // Webhooks
+    "/_next/static/(.*)",   // Next.js static files
+    "/favicon.ico",         // Favicon
+    "/api/health",          // Health check endpoint
+  ],
+  
+  // Debug mode for development environment only
+  debug: process.env.NODE_ENV === 'development',
 });
 
+/**
+ * Matcher configuration for the middleware
+ * 
+ * This defines which routes the middleware should run on.
+ * It includes all routes except static files, Next.js internals, and specific API routes.
+ */
 export const config = {
-    matcher: [
-        // Skip Next.js internals and all static files, unless found in search params
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-        // Always run for API routes
-        '/(api|trpc)(.*)',
-    ],
+  matcher: [
+    // Match all routes except static files, api routes, and Next.js internals
+    "/((?!.*\\..*|_next).*)",
+    "/",
+    "/(api|trpc)(.*)",
+  ],
 };

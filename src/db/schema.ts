@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, date } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, integer, date, timestamp } from 'drizzle-orm/pg-core';
 
 // Politicians table (static information)
 export const politicians = pgTable('politicians', {
@@ -38,3 +38,11 @@ export const votes = pgTable('votes', {
 }, (table) => ({
     uniqueConstraint: { columns: [table.politicianId, table.votingSessionId] } // Ensure one vote per session per politician
 }));
+
+// Search tracking table to record and rank politician searches
+export const searchStats = pgTable('search_stats', {
+    id: serial('id').primaryKey(),              // Auto-incremented unique identifier
+    politicianId: integer('politician_id').references(() => politicians.id), // Foreign key reference to politicians
+    searchCount: integer('search_count').notNull().default(0), // Number of times this politician has been searched
+    lastSearched: timestamp('last_searched').notNull().defaultNow(), // When this politician was last searched
+});

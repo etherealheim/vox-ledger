@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import {
     Area,
@@ -28,6 +28,10 @@ import {
 
 export const description = "A simple area chart showing monthly attendance";
 
+/**
+ * Chart configuration for attendance data
+ * Defines the label and color for the chart
+ */
 const chartConfig = {
     attendance: {
         label: "Attendance",
@@ -44,6 +48,10 @@ interface ChartAreaProps {
     handle: string;
 }
 
+/**
+ * Area chart component that displays attendance data over time
+ * Fetches data from the API and displays it in a responsive chart
+ */
 export function ChartArea({ handle }: ChartAreaProps) {
     const [chartData, setChartData] = useState<AttendanceData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -51,26 +59,56 @@ export function ChartArea({ handle }: ChartAreaProps) {
     const [trend, setTrend] = useState<string>("Trending up by 5.2%");
     const [averageText, setAverageText] = useState<string>("");
 
+    /**
+     * Calculates the average attendance from the provided data
+     */
+    const calculateAverageText = useCallback((data: AttendanceData[]) => {
+        const totalAttendance = data.reduce((sum, d) => sum + d.attendancePercentage, 0);
+        const averageAttendance = data.length > 0 ? totalAttendance / data.length : 0;
+        
+        if (averageAttendance < 60) return "Underperforming";
+        if (averageAttendance < 90) return "Could be better";
+        return "Performing well";
+    }, []);
+
+    /**
+     * Calculates the trend based on the last three months of data
+     */
+    const calculateTrend = useCallback((data: AttendanceData[]) => {
+        if (data.length < 3) return "Insufficient data";
+        
+        const latest = data.slice(-3).map(d => d.attendancePercentage);
+        const firstTwo = (latest[0] + latest[1]) / 2;
+        const last = latest[2];
+        const change = last - firstTwo;
+        const percentChange = (change / firstTwo) * 100;
+        
+        if (Math.abs(percentChange) < 1) return "Stable";
+        
+        const direction = percentChange > 0 ? "up" : "down";
+        return `Trending ${direction} by ${Math.abs(percentChange).toFixed(1)}%`;
+    }, []);
+
+    // Fetch attendance data when the handle changes
     useEffect(() => {
         const fetchData = async () => {
             if (!handle) {
-                console.log("No handle provided, skipping fetch.");
+                setError("No handle provided");
                 setLoading(false);
                 return;
             }
 
             try {
                 setLoading(true);
-                console.log(`Fetching data from /api/attendance/${handle}`);
+                setError(null);
+                
                 const response = await fetch(`/api/attendance/${handle}`);
-                console.log("Received response status:", response.status);
 
                 if (!response.ok) {
                     throw new Error(`Network response was not ok: ${response.statusText}`);
                 }
 
                 const data: AttendanceData[] = await response.json();
-                console.log("Fetched Attendance Data:", data);
 
                 // Validate and filter data for the last 6 months
                 const validData = data
@@ -80,173 +118,141 @@ export function ChartArea({ handle }: ChartAreaProps) {
                             !isNaN(d.attendancePercentage)
                     )
                     .slice(-6); // Only keep the last 6 months of data
+                
                 setChartData(validData);
-                setLoading(false);
-
-                // Calculate average attendance
-                const totalAttendance = validData.reduce((sum, d) => sum + d.attendancePercentage, 0);
-                const averageAttendance = validData.length > 0 ? totalAttendance / validData.length : 0;
-                const calculatedAverageText = averageAttendance < 60
-                    ? "Underperforming"
-                    : averageAttendance < 90
-                        ? "Could be better"
-                        : "Performing well";
-                setAverageText(calculatedAverageText);
-
-                // Calculate trend based on the latest three months
-                try {
-                    // Check if there's enough data for the last 3 months
-                    if (validData.length >= 3) {
-                        const latest = validData.slice(-3).map(d => d.attendancePercentage);
-                        const previous = validData.slice(-4, -1).map(d => d.attendancePercentage);
-
-                        // Calculate the averages for the latest and previous 3 months
-                        const latestAverage = latest.reduce((sum, value) => sum + value, 0) / latest.length;
-                        const previousAverage = previous.reduce((sum, value) => sum + value, 0) / previous.length;
-
-                        // Calculate the difference between the latest and previous averages
-                        const difference = latestAverage - previousAverage;
-                        const trendPercentage = Math.abs(difference).toFixed(1);
-
-                        // Determine if the trend is up, down, or unchanged
-                        if (difference > 0) {
-                            setTrend(`Trending up by ${trendPercentage}%`);
-                        } else if (difference < 0) {
-                            setTrend(`Trending down by ${trendPercentage}%`);
-                        } else {
-                            setTrend("No change in the last three months");
-                        }
-                    } else {
-                        setTrend("Insufficient data to determine trend");
-                    }
-                } catch (error) {
-                    console.error("Error fetching attendance data:", error);
-                    setError("Failed to load attendance data.");
-                    setLoading(false);
-                }
-
-            } catch (error) {
-                console.error("Error fetching attendance data:", error);
-                setError("Failed to load attendance data.");
+                setAverageText(calculateAverageText(validData));
+                setTrend(calculateTrend(validData));
+                
+            } catch (err) {
+                setError(err instanceof Error ? err.message : "Failed to fetch attendance data");
+            } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [handle]);
+    }, [handle, calculateAverageText, calculateTrend]);
 
-    if (loading) {
+    // Memoize the chart content to prevent unnecessary re-renders
+    const chartContent = useMemo(() => {
+        if (loading) {
+            return <div className="flex items-center justify-center h-[300px]">Loading chart data...</div>;
+        }
+
+        if (error) {
+            return <div className="flex items-center justify-center h-[300px] text-destructive">{error}</div>;
+        }
+
+        if (chartData.length === 0) {
+            return <div className="flex items-center justify-center h-[300px]">No attendance data available</div>;
+        }
+
         return (
-            <Card className="flex flex-col">
-                <CardHeader className="items-start pb-0">
-                    <CardTitle>Loading Attendance Data...</CardTitle>
-                    <CardDescription>Please wait while we fetch the data.</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 pb-0">
-                    <div className="mx-auto aspect-square max-h-[250px] flex items-center justify-center">
-                        <p>Loading...</p>
-                    </div>
-                </CardContent>
-                <CardFooter className="flex-col gap-2 text-sm">
-                    <div className="flex items-center gap-2 font-medium leading-none">
-                        <p>Loading trend...</p>
-                    </div>
-                    <div className="leading-none text-muted-foreground">
-                        <p>Showing attendance percentages per month</p>
-                    </div>
-                </CardFooter>
-            </Card>
+            <ResponsiveContainer width="100%" height={300}>
+                <AreaChart
+                    data={chartData}
+                    margin={{
+                        top: 20,
+                        right: 20,
+                        bottom: 20,
+                        left: 0,
+                    }}
+                >
+                    <defs>
+                        <linearGradient id="attendance" x1="0" y1="0" x2="0" y2="1">
+                            <stop
+                                offset="5%"
+                                stopColor={chartConfig.attendance.color}
+                                stopOpacity={0.3}
+                            />
+                            <stop
+                                offset="95%"
+                                stopColor={chartConfig.attendance.color}
+                                stopOpacity={0}
+                            />
+                        </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis
+                        dataKey="month"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={10}
+                        padding={{ left: 10, right: 10 }}
+                    />
+                    <YAxis
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={10}
+                        domain={[0, 100]}
+                        tickFormatter={(value) => `${value}%`}
+                    />
+                    <Tooltip
+                        content={({ active, payload }) => {
+                            if (active && payload && payload.length) {
+                                return (
+                                    <div className="rounded-lg border bg-background p-2 shadow-md">
+                                        <div className="font-medium">{payload[0].payload.month}</div>
+                                        <div className="text-sm text-muted-foreground">
+                                            Attendance: <span className="font-medium text-foreground">{payload[0].value}%</span>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        }}
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="attendancePercentage"
+                        stroke={chartConfig.attendance.color}
+                        strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#attendance)"
+                    />
+                </AreaChart>
+            </ResponsiveContainer>
         );
-    }
+    }, [chartData, loading, error]);
 
-    if (error) {
-        return (
-            <Card className="flex flex-col">
-                <CardHeader className="items-start pb-0">
-                    <CardTitle>Error</CardTitle>
-                    <CardDescription>{error}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 pb-0">
-                    <div className="mx-auto aspect-square max-h-[250px] flex items-center justify-center">
-                        <p>{error}</p>
-                    </div>
-                </CardContent>
-                <CardFooter className="flex-col gap-2 text-sm">
-                    <div className="flex items-center gap-2 font-medium leading-none">
-                        <p>Unable to display trend.</p>
-                    </div>
-                    <div className="leading-none text-muted-foreground">
-                        <p>Please try again later.</p>
-                    </div>
-                </CardFooter>
-            </Card>
-        );
-    }
-
-    const totalAttendance = chartData.reduce((sum, d) => sum + d.attendancePercentage, 0);
-    const averageAttendance = chartData.length > 0 ? totalAttendance / chartData.length : 0;
+    // Memoize the trend indicator to prevent unnecessary re-renders
+    const trendIndicator = useMemo(() => {
+        if (trend.includes("up")) {
+            return (
+                <div className="flex items-center text-green-600">
+                    <TrendingUp className="mr-1 h-4 w-4" />
+                    <span>{trend}</span>
+                </div>
+            );
+        }
+        
+        if (trend.includes("down")) {
+            return (
+                <div className="flex items-center text-red-600">
+                    <TrendingDown className="mr-1 h-4 w-4" />
+                    <span>{trend}</span>
+                </div>
+            );
+        }
+        
+        return <div>{trend}</div>;
+    }, [trend]);
 
     return (
-        <Card className="flex flex-col font-[family-name:var(--font-satoshi-sans)]">
-            <CardHeader className="items-start pb-0">
-                <CardTitle>{averageText}</CardTitle>
-                <CardDescription className="pb-2">
-                    Attendance average of {averageAttendance.toFixed(1)}% past 6 months
-                </CardDescription>
+        <Card>
+            <CardHeader>
+                <CardTitle>Attendance</CardTitle>
+                <CardDescription>Monthly attendance percentage</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0">
-                <ChartContainer config={chartConfig} className="w-full h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart
-                            data={chartData}
-                            margin={{
-                                top: 20,
-                                right: 0,
-                                left: -30,
-                                bottom: 20,
-                            }}
-                        >
-                            <defs>
-                                <linearGradient id="colorAttendance" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#57534e" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#57534e" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                tickFormatter={(value) => value.slice(0, 3)}
-                            />
-                            <YAxis
-                                domain={[0, 100]}
-                                tickFormatter={(value) => `${value}`}
-                                tickLine={false}
-                                axisLine={false}
-                            />
-                            <Tooltip
-                                content={<ChartTooltipContent />}
-                                formatter={(value: number) => ["Attendance: ", `${value}%`]}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="attendancePercentage"
-                                stroke="#78716c"
-                                fillOpacity={1}
-                                fill="url(#colorAttendance)"
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
+            <CardContent>
+                <ChartContainer config={chartConfig}>
+                    {chartContent}
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col gap-2 text-sm">
-                <div className="flex items-center gap-2 font-medium leading-none">
-                    {trend} {trend.includes("up") ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-                </div>
-                <div className="leading-none text-muted-foreground">
-                    Based on data from the last three months.
+            <CardFooter className="flex flex-col items-start gap-2">
+                <div className="text-sm font-medium">{averageText}</div>
+                <div className="text-xs text-muted-foreground">
+                    {trendIndicator}
                 </div>
             </CardFooter>
         </Card>

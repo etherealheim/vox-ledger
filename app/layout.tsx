@@ -50,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider signInForceRedirectUrl="/dashboard">
+    <ClerkProvider>
       <html lang="en">
         <Favicon />
         <body
@@ -63,20 +63,20 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <div className="dark flex justify-between h-16 p-4">
-              <div className="fixed top-0 left-0">
+              <div className="fixed top-0 left-0 flex items-center">
                 <Logo />
-              </div>
-              <div className="fixed bottom-4 left-4">
-                <MenubarInit />
+                <div className="pl-8">
+                  <MenubarInit />
+                </div>
               </div>
               <div className="fixed top-4 right-4">
                 <SignedOut>
-                  <SignInButton>
+                  <SignInButton mode="modal">
                     <Button variant="secondary">Login</Button>
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                  <UserButton />
+                  <UserButton afterSignOutUrl="/" />
                 </SignedIn>
               </div>
             </div>
@@ -84,7 +84,6 @@ export default function RootLayout({
             <Analytics />
           </ThemeProvider>
         </body>
-
       </html>
     </ClerkProvider>
   );

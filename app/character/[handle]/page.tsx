@@ -13,19 +13,36 @@ import CardSummary from '@/components/custom/card-summary';
 import Timeline from '@/components/custom/timeline';
 import { AccordionVote } from '@/components/custom/accordion-vote';
 
+// Mapping of handles to proper names with diacritics
+const handleToNameMap: Record<string, string> = {
+  'petr-fiala': 'Petr Fiala',
+  'andrej-babis': 'Andrej Babiš',
+  'marketa-pekarova-adamova': 'Markéta Pekarová Adamová',
+  'ivan-bartos': 'Ivan Bartoš',
+  'tomio-okamura': 'Tomio Okamura',
+  'vit-rakusan': 'Vít Rakušan',
+  'marian-jurecka': 'Marian Jurečka',
+  'jana-cernochova': 'Jana Černochová',
+  'zbynek-stanjura': 'Zbyněk Stanjura',
+  'milos-zeman': 'Miloš Zeman'
+};
+
 const CharacterPage = () => {
     const params = useParams();
     const handle = params?.handle as string | undefined;
 
-    // Convert handle to character name
-    const character = handle
-        ?.split('-')
-        .map((word) =>
-            word.length === 1
-                ? word.toUpperCase() + '.'
-                : word.charAt(0).toUpperCase() + word.slice(1)
-        )
-        .join(' ') || '';
+    // Get character name from mapping or generate from handle
+    const character = handle ? (
+        handleToNameMap[handle] || 
+        handle
+            .split('-')
+            .map((word) =>
+                word.length === 1
+                    ? word.toUpperCase() + '.'
+                    : word.charAt(0).toUpperCase() + word.slice(1)
+            )
+            .join(' ')
+    ) : '';
 
     // State variables for OpenAI responses
     const [position, setPosition] = useState<string | null>(null);
