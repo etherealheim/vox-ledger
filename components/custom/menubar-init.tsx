@@ -10,7 +10,6 @@ import {
     MenubarTrigger,
 } from "@/components/ui/menubar"
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

@@ -1,10 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/src/db';
 import { politicians, searchStats } from '@/src/db/schema';
-import { ilike, desc, sql, eq } from 'drizzle-orm';
+import { desc, sql, eq } from 'drizzle-orm';
+
+// Define types for politician data
+interface Politician {
+    id: number;
+    name: string;
+    handle: string;
+    searchCount?: number;
+}
 
 // Cache for politicians data (5 minute TTL)
-let politiciansCache: { data: any; timestamp: number } | null = null;
+let politiciansCache: { data: Politician[]; timestamp: number } | null = null;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -31,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (politiciansCache && (now - politiciansCache.timestamp < CACHE_TTL)) {
             // If there's a query, filter the cached data
             if (query) {
-                const filteredData = politiciansCache.data.filter((politician: any) => {
+                const filteredData = politiciansCache.data.filter((politician: Politician) => {
                     return politician.name.toLowerCase().includes(query.toLowerCase()) ||
                            politician.handle.toLowerCase().includes(query.toLowerCase());
                 });

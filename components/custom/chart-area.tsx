@@ -23,7 +23,6 @@ import {
 import {
     ChartConfig,
     ChartContainer,
-    ChartTooltipContent,
 } from "@/components/ui/chart";
 
 export const description = "A simple area chart showing monthly attendance";

@@ -210,6 +210,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ autoFocus = false }) => {
         const fetchTopSearched = async () => {
             try {
                 setIsLoading(true);
+                setError(null); // Reset error state before fetching
                 const response = await fetch('/api/search');
                 if (!response.ok) {
                     throw new Error('Failed to fetch top searched politicians');
@@ -228,6 +229,8 @@ const SearchBox: React.FC<SearchBoxProps> = ({ autoFocus = false }) => {
                 }
             } catch (err) {
                 console.error('Error fetching top searched politicians:', err);
+                // Set error state
+                setError('Failed to load suggestions. Using fallback data.');
                 // Fallback to mock data on error
                 setTopSearched(mockPoliticians.slice(0, 5));
             } finally {
